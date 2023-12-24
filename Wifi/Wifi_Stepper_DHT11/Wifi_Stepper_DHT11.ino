@@ -11,7 +11,7 @@
  LƯU Ý: CHƯA CHẠY THỬ
 Thiết bị gắn:
   - Động cơ Stepper: Gắn dây IN1~D2, IN2~D5, IN3~D6, IN4~D7 // chân cắm đúng, chưa chạy thử
-  - Cảm biến DHT11: Gắn dây số D vào chân D1 // đã kiểm tra, //oke
+  - Cảm biến DHT11: Gắn dây số D vào chân D4, nguồn vào 3v3 // đã kiểm tra, //oke
 */
 
 // Thiết lập thông số cho WiFi
@@ -21,7 +21,7 @@ const char* password = "1234@56789";
 // Khởi tạo đối tượng máy chủ web
 ESP8266WebServer server(80);
 
-#define DHTPIN 5
+#define DHTPIN 2
 #define DHTTYPE DHT11
 
 
@@ -126,7 +126,8 @@ void setup() {
     - Động cơ bước
     - Cảm biến ánh sáng (không khai báo vì mặc định chân tương tự là input)
   */
-
+  dht.begin();
+  delay(1000);
   myStepper.setSpeed(13);
   // lập lịch
   Scheduler.start(&spin);
