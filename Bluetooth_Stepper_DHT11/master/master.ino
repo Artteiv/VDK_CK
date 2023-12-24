@@ -6,6 +6,8 @@
 #include "DHT.h"
 #define DHTPin 4
 #define DHTType DHT11
+
+//Cổng D10 = RX, D11 = TX
 SoftwareSerial BTSerial(10, 11);
 
 DHT HT(DHTPin, DHTType);
