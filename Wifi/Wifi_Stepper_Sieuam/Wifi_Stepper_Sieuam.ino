@@ -10,7 +10,7 @@
 Thiết bị gắn:
   - Động cơ servo: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2,D5,D6,D7
                                                                         8 9  10 11 
-  - Cảm biến siêu âm: Gắn chân trig vào chân D6, chân echo vào chân D7, 
+  - Cảm biến siêu âm: Gắn chân trig vào chân D1, chân echo vào chân D0, 
 */
 
 // Thiết lập thông số cho WiFi
@@ -21,7 +21,7 @@ const char* password = "1234@56789";
 ESP8266WebServer server(80);
 
 #define trig 5//gpio1
-#define echo 2//gpio4
+#define echo 16//gpio4
 const int STEPS = 2048;
 Stepper myStepper = Stepper(STEPS,4,12,14,13);
 //gpio 4 12 14 13
@@ -44,8 +44,9 @@ class BlinkTask : public Task {
     if (angle>0){
       degreeC = degreeToSteps(angle);
     }
-    else degreeC = -degreeToSteps(angle);
+    else degreeC = -degreeToSteps(-angle);
     myStepper.step(degreeC);
+    delay(1000);
   }
 
 } spin;
@@ -66,6 +67,7 @@ void handleSieuam(){
 
 void handleStepper() {
   // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
+  Serial.println("Da goi");
   if (server.hasArg("angle")) {
     angle = server.arg("angle").toInt();
     Serial.print("Get info: ");

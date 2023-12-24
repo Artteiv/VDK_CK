@@ -16,7 +16,6 @@
 
         <script>
             var espServer = "http://192.168.49.10"
-        
             function getSieuam() {
                 fetch(espServer+"/sieuam")
                     .then((response) => {
@@ -47,7 +46,7 @@
                     })
                     .catch(error => console.error('Error:', error));
             }
-            setInterval(updateData, 1000);
+            setInterval(updateData, 5000);
         </script>
         
     </body>
