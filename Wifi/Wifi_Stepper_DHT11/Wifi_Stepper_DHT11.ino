@@ -19,12 +19,27 @@ ESP8266WebServer server(80);
 #define DHTPIN 2
 #define DHTTYPE DHT11
 const int STEPS = 2048;
+// 
 Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
 int angle = 90;
 int degreeToSteps(int degree, int STEPS = 2048){
   if (degree == 0) return 0;
   return STEPS / (360/degree);
 }
+
+class BlinkTask : public Task {
+ protected:
+  void setup() {
+  }
+
+  void loop() {
+    servo.write(servo_angle);
+    delay(1000);
+    servo.write(0);
+    delay(1000);
+  }
+
+} servoSpin;
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -83,14 +98,9 @@ void setup() {
     delay(1000);
   }
   Serial.println("Đã kết nối thành công!");
-  // Định nghĩa các endpoint và gán hàm xử lý tương ứng
-  // server.on("/led=on", handleLEDOn);
-  // server.on("/led=off", handleLEDOff);
   server.on("/dht/temp", handleTemp);
   server.on("/dht/hum", handleHum);
   server.on("/stepper", HTTP_GET, handleServo);
-
-  // Khởi động máy chủ
   server.enableCORS(true);
   server.begin();
   Serial.println("Server started");
@@ -100,6 +110,7 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("/");
   // Bắt đầu cảm biến DHT và Servo
+  myStepper.setSpeed(13);
   dht.begin();
   servo.attach(SERVO_PIN);
   pinMode(LED,OUTPUT);

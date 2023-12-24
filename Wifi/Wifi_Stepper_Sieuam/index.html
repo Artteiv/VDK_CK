@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
+    <head>
+        <title>ESP8266 Control Panel</title>
+    </head>
+    <body onload="updateData()">
+        <h1>ESP8266 Control Panel</h1>
+
+        <h2>Thông tin cảm biến siêu âm</h2>
+        <p id="sieuam"></p>
+
+        <h2>Điều khiển động cơ bước</h2>
+        <input type="number" id="angle" placeholder="Nhập góc (-90 đến 90)" />
+        <button onclick="controlStepper()">Điều khiển Servo</button>
+
+        <script>
+            var espServer = "http://192.168.49.10"
+        
+            function getSieuam() {
+                fetch(espServer+"/sieuam")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then((data) => {
+                        console.log("sieuam:", data);
+                        document.getElementById("sieuam").innerText = "Khoảng cách đến vật cản: "+ data +"cm." ;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        
+            function updateData() {
+                getSieuam();
+            }
+        
+            function controlStepper() {
+                const angle = document.getElementById("angle").value;
+                fetch(espServer+`/stepper?angle=${angle}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        console.log("Stepper controlled");
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+            setInterval(updateData, 1000);
+        </script>
+        
+    </body>
+</html>

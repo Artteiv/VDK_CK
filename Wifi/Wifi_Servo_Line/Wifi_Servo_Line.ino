@@ -8,7 +8,7 @@
 
 /*
 Thiết bị gắn:
-  - Động cơ servo: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2  
+  - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2  
   - Cảm biến dò line: Gắn dây số D vào chân D4, vcc vào 3v3// đã kiểm tra, //oke
 */
 
