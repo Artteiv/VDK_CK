@@ -8,7 +8,7 @@
 //NHỚ KẾT NỐI CÙNG MỘT WIFI, KIỂM TRA ĐỊA CHỈ IP TRÊN FILE INDEX
 /*
 Thiết bị gắn:
-  - Động cơ servo: Gắn dây vàng(gốc)-xanh(của nhóm) là chân data vào D2 // đã kiểm tra, //oke 
+  - Động cơ servo: Gắn dây vàng(gốc)-xanh(của nhóm) là chân data vào D2  
   - Cảm biến ánh sáng: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // Đã kiểm tra, oke
 */
 

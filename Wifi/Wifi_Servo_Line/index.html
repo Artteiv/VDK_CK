@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
     <head>
         <title>ESP8266 Control Panel</title>
     </head>
@@ -7,8 +8,7 @@
         <h1>ESP8266 Control Panel</h1>
 
         <h2>Thông tin cảm biến dò line</h2>
-        <p id="temperature"></p>
-        <p id="humidity"></p>
+        <p id="line"></p>
 
         <h2>Điều khiển Servo</h2>
         <input type="number" id="servoAngle" placeholder="Nhập góc (0-180)" />
@@ -17,8 +17,8 @@
         <script>
             var espServer = "http://192.168.49.10"
         
-            function getTemperature() {
-                fetch(espServer+"/dht/temp")
+            function getLine() {
+                fetch(espServer+"/line")
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -26,30 +26,16 @@
                         return response.text();
                     })
                     .then((data) => {
-                        console.log("Temperature:", data);
-                        document.getElementById("temperature").innerText = "Nhiệt độ: " + data + " °C";
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-        
-            function getHumidity() {
-                fetch(espServer+"/dht/hum")
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then((data) => {
-                        console.log("Humidity:", data);
-                        document.getElementById("humidity").innerText = "Độ ẩm: " + data + " %";
+                        console.log("Line:", data);
+                        let p = parseInt(data);
+    
+                        document.getElementById("line").innerText = "Line "+(p?"Đen":"Trắng") ;
                     })
                     .catch(error => console.error('Error:', error));
             }
         
             function updateData() {
-                getTemperature();
-                getHumidity();
+                getLine();
             }
         
             function controlServo() {
@@ -63,9 +49,7 @@
                     })
                     .catch(error => console.error('Error:', error));
             }
-            
             setInterval(updateData, 1000);
-            //updateData();
         </script>
         
     </body>
