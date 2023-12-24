@@ -8,8 +8,8 @@
 
 /*
 Thiết bị gắn:
-  - Động cơ servo: Gắn dây vàng(gốc)-xanh(của nhóm) là chân data vào D2
-  - Cảm biến ánh sáng: Gắn data A0 vào chân A0(esp) 
+  - Động cơ servo: Gắn dây vàng(gốc)-xanh(của nhóm) là chân data vào D2 // đã kiểm tra, //oke 
+  - Cảm biến ánh sáng: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // Đã kiểm tra, oke
 */
 
 // Thiết lập thông số cho WiFi
