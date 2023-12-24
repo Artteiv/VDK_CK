@@ -14,12 +14,15 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // Đọc giá trị chân tương tự A0 
+  // Cắm cảm biến ánh sáng chân A0
   int val = analogRead(lightPin);
-
   String valueString = String(val);
   const char* value = valueString.c_str();
+  
+  // In ra màn hình bên master giá trị của chân tương tự A0
   Serial.println(value);
+  // Gửi giá trị qua slave
   BTSerial.write(value);
   delay(2000);
 }
