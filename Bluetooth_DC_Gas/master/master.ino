@@ -5,6 +5,7 @@
 #include <SoftwareSerial.h>
 int val = 0;
 int pin = 0;
+//Cổng D10 = TX = cam, D11 = RX = đỏ, 5V = xanh lá, GND = vàng, nhớ chuyển Both NL & CR
 
 SoftwareSerial BTSerial(10, 11);
 

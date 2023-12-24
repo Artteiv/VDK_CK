@@ -8,6 +8,7 @@
 #define echoPin 6
 int duration;
 int distance;
+//Cổng D10 = TX = cam, D11 = RX = đỏ, 5V = xanh lá, GND = vàng, nhớ chuyển Both NL & CR
 SoftwareSerial BTSerial(10, 11);
 
 void setup() {
