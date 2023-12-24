@@ -10,8 +10,8 @@
 
 /*
 Thiết bị gắn:
-  - Động cơ servo: Gắn dây vàng(gốc)-xanh(của nhóm) là chân data vào D2 // đã kiểm tra, //oke 
-  - Cảm biến khí ga: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // đã kiểm tra, //oke
+  - Động cơ servo: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2 // đã kiểm tra, //oke 
+  - Cảm biến DHT11: Gắn dây số D vào chân D4 // đã kiểm tra, //oke
 */
 
 
