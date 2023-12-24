@@ -14,34 +14,12 @@
         <p id="temperature"></p>
         <p id="humidity"></p>
 
-        <h2>Điều khiển Servo</h2>
-        <input type="number" id="servoAngle" placeholder="Nhập góc (0-180)" />
-        <button onclick="controlServo()">Điều khiển Servo</button>
+        <h2>Điều khiển Stepper</h2>
+        <input type="number" id="stepperAngle" placeholder="Nhập góc (0-180)" />
+        <button onclick="controlStepper()">Điều khiển Stepper</button>
 
         <script>
             var espServer = "http://192.168.154.18"
-        
-            function turnOn() {
-                fetch(espServer+"/led=on")
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("LED turned on");
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-        
-            function turnOff() {
-                fetch(espServer+"/led=off")
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("LED turned off");
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
         
             function getTemperature() {
                 fetch(espServer+"/dht/temp")
@@ -78,19 +56,19 @@
                 getHumidity();
             }
         
-            function controlServo() {
-                const angle = document.getElementById("servoAngle").value;
-                fetch(espServer+`/servo?angle=${angle}`)
+            function controlStepper() {
+                const angle = document.getElementById("stepperAngle").value;
+                fetch(espServer+`/stepper?angle=${angle}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
-                        console.log("Servo controlled");
+                        console.log("Stepper controlled");
                     })
                     .catch(error => console.error('Error:', error));
             }
             
-            setInterval(updateData, 10000);
+            setInterval(updateData, 1000);
             //updateData();
         </script>
         
