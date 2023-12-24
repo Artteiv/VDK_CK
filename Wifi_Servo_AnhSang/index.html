@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ESP8266 Control Panel</title>
+    </head>
+    <body onload="updateData()">
+        <h1>ESP8266 Control Panel</h1>
+
+
+        <h2>Thông tin cảm biến</h2>
+        <!-- <p id="temperature"></p>
+        <p id="humidity"></p> -->
+        <p id ="light"></p>
+        <!-- <p id="line"></p>
+        <p id="joystick"></p>
+        <p id="sieuam"></p>
+        <p id="gas"></p> -->
+
+        <h2>Điều khiển Servo</h2>
+        <input type="number" id="servoAngle" placeholder="Nhập góc (0-180)" />
+        <button onclick="controlServo()">Điều khiển Servo</button>
+
+        <script>
+            var espServer = "http://192.168.49.10"
+        
+            function getLight() {
+                fetch(espServer+"/light")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then((data) => {
+                        console.log("Light:", data);
+                        document.getElementById("light").innerText = "Ánh sáng: " + data ;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+            function updateData() {
+                getLight();
+            }
+        
+            function controlServo() {
+                const angle = document.getElementById("servoAngle").value;
+                fetch(espServer+`/servo?angle=${angle}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        console.log("Servo controlled");
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+            
+            setInterval(updateData, 1000);
+            //updateData();
+        </script>
+        
+    </body>
+</html>
