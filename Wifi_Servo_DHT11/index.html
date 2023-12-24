@@ -6,15 +6,9 @@
     <body onload="updateData()">
         <h1>ESP8266 Control Panel</h1>
 
-
         <h2>Thông tin cảm biến</h2>
-        <!-- <p id="temperature"></p>
-        <p id="humidity"></p> -->
-        <p id ="light"></p>
-        <!-- <p id="line"></p>
-        <p id="joystick"></p>
-        <p id="sieuam"></p>
-        <p id="gas"></p> -->
+        <p id="temperature"></p>
+        <p id="humidity"></p>
 
         <h2>Điều khiển Servo</h2>
         <input type="number" id="servoAngle" placeholder="Nhập góc (0-180)" />
@@ -23,8 +17,8 @@
         <script>
             var espServer = "http://192.168.49.10"
         
-            function getLight() {
-                fetch(espServer+"/light")
+            function getTemperature() {
+                fetch(espServer+"/dht/temp")
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -32,13 +26,30 @@
                         return response.text();
                     })
                     .then((data) => {
-                        console.log("Light:", data);
-                        document.getElementById("light").innerText = "Ánh sáng: " + data ;
+                        console.log("Temperature:", data);
+                        document.getElementById("temperature").innerText = "Nhiệt độ: " + data + " °C";
                     })
                     .catch(error => console.error('Error:', error));
             }
+        
+            function getHumidity() {
+                fetch(espServer+"/dht/hum")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then((data) => {
+                        console.log("Humidity:", data);
+                        document.getElementById("humidity").innerText = "Độ ẩm: " + data + " %";
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        
             function updateData() {
-                getLight();
+                getTemperature();
+                getHumidity();
             }
         
             function controlServo() {
