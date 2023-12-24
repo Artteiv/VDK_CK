@@ -5,8 +5,16 @@
 #include <ESP8266WebServer.h>
 #include <DHT.h>
 #include <Servo.h>
-//DHT D4 day nau servo D2 day xanh la
+
 //NHỚ KẾT NỐI CÙNG MỘT WIFI, KIỂM TRA ĐỊA CHỈ IP TRÊN FILE INDEX
+
+/*
+Thiết bị gắn:
+  - Động cơ servo: Gắn dây vàng(gốc)-xanh(của nhóm) là chân data vào D2 // đã kiểm tra, //oke 
+  - Cảm biến khí ga: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // đã kiểm tra, //oke
+*/
+
+
 // Thiết lập thông số cho WiFi
 const char* ssid = "123456789";
 const char* password = "1234@56789";
