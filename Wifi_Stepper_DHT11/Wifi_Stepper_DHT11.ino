@@ -20,14 +20,13 @@ ESP8266WebServer server(80);
 #define DHTTYPE DHT11
 const int STEPS = 2048;
 Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
-
+int angle = 90;
 int degreeToSteps(int degree, int STEPS = 2048){
   if (degree == 0) return 0;
   return STEPS / (360/degree);
 }
 
 DHT dht(DHTPIN, DHTTYPE);
-Servo servo;
 
 void handleTemp() {
   // Đọc nhiệt độ từ cảm biến DHT
@@ -54,7 +53,7 @@ void handleHum() {
 void handleStepper() {
   // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
   if (server.hasArg("angle")) {
-    int angle = server.arg("angle").toInt();
+    angle = server.arg("angle").toInt();
     int degreeC = degreeToSteps(angle);
   if (1) {
     myStepper.step(degreeC);
