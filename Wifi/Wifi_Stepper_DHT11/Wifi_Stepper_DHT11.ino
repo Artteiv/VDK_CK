@@ -10,7 +10,7 @@
 /*
  LƯU Ý: CHƯA CHẠY THỬ
 Thiết bị gắn:
-  - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2,D5,D6,D7 // chân cắm đúng, chưa chạy thử
+  - Động cơ Stepper: Gắn dây IN1~D2, IN2~D5, IN3~D6, IN4~D7 // chân cắm đúng, chưa chạy thử
   - Cảm biến DHT11: Gắn dây số D vào chân D1 // đã kiểm tra, //oke
 */
 
@@ -126,7 +126,7 @@ void setup() {
     - Động cơ bước
     - Cảm biến ánh sáng (không khai báo vì mặc định chân tương tự là input)
   */
- 
+
   myStepper.setSpeed(13);
   // lập lịch
   Scheduler.start(&spin);

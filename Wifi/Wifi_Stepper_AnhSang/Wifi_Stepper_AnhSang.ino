@@ -9,7 +9,7 @@
 /*
  LƯU Ý: CHƯA CHẠY THỬ
 Thiết bị gắn:
-  - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2,D5,D6,D7 // chân cắm đúng, chưa chạy thử
+  - Động cơ Stepper: Gắn dây IN1~D2, IN2~D5, IN3~D6, IN4~D7 // chân cắm đúng, chưa chạy thử
   - Cảm biến ánh sáng: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // chân cắm đúng chưa chạy thử
 */
 
