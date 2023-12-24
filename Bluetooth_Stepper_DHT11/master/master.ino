@@ -6,7 +6,7 @@
 #include "DHT.h"
 #define DHTPin 4
 #define DHTType DHT11
-//Cổng D10 = TX, D11 = RX
+//Cổng D10 = TX = cam, D11 = RX = đỏ, 5V = xanh lá, GND = vàng, nhớ chuyển Both NL & CR
 SoftwareSerial BTSerial(10, 11);
 
 DHT HT(DHTPin, DHTType);
