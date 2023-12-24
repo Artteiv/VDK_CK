@@ -6,8 +6,7 @@
 #include "DHT.h"
 #define DHTPin 4
 #define DHTType DHT11
-
-//Cổng D10 = RX, D11 = TX
+//Cổng D10 = TX, D11 = RX
 SoftwareSerial BTSerial(10, 11);
 
 DHT HT(DHTPin, DHTType);
@@ -44,7 +43,7 @@ void loop() {
   BTSerial.print(",");
   String valueStringhumidity = String(humidity);
   const char* valuehumidity = valueStringhumidity.c_str();
-
+  
   BTSerial.write(valuehumidity);
   delay(2000);
 }
