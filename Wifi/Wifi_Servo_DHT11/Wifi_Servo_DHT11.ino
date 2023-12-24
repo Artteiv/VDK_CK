@@ -6,7 +6,7 @@
 #include <DHT.h>
 #include <Servo.h>
 //DHT D4 day nau servo D2 day xanh la
-
+//NHỚ KẾT NỐI CÙNG MỘT WIFI, KIỂM TRA ĐỊA CHỈ IP TRÊN FILE INDEX
 // Thiết lập thông số cho WiFi
 const char* ssid = "123456789";
 const char* password = "1234@56789";
