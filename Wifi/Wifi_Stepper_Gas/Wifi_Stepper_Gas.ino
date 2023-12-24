@@ -4,28 +4,24 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Stepper.h>
-#include <DHT.h>
 //NHỚ KẾT NỐI CÙNG MỘT WIFI, KIỂM TRA ĐỊA CHỈ IP TRÊN FILE INDEX
 
 /*
  LƯU Ý: CHƯA CHẠY THỬ
-Thiết bị gắn:
+Thiết bị gắn: 
   - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2,D5,D6,D7 // chân cắm đúng, chưa chạy thử
-  - Cảm biến DHT11: Gắn dây số D vào chân D1 // đã kiểm tra, //oke
+  - Cảm biến khí ga: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // đã kiểm tra, //oke
 */
 
 // Thiết lập thông số cho WiFi
+#define gasPin 0
 const char* ssid = "123456789";
 const char* password = "1234@56789";
 
 // Khởi tạo đối tượng máy chủ web
 ESP8266WebServer server(80);
 
-#define DHTPIN 5
-#define DHTTYPE DHT11
 
-
-DHT dht(DHTPIN, DHTTYPE);
 const int STEPS = 2048;
 Stepper myStepper = Stepper(STEPS,4,12,14,13);
 //gpio 4 12 14 13
@@ -41,8 +37,8 @@ int degreeToSteps(int degree, int STEPS = 2048){
 class BlinkTask : public Task {
  protected:
   void setup() {
+  
   }
-
   void loop() {
     int degreeC = 0;
     if (angle>0){
@@ -55,25 +51,13 @@ class BlinkTask : public Task {
 
 } spin;
 
-void handleTemp() {
-  // Đọc nhiệt độ từ cảm biến DHT
-  float temperature = dht.readTemperature();
-  Serial.println(temperature);
-  if (isnan(temperature)) {
-    server.send(500, "text/plain", "Lỗi khi đọc nhiệt độ từ cảm biến");
+void handleGas() {
+  int val = analogRead(gasPin);
+  Serial.println(val);
+  if (isnan(val)) {
+    server.send(500, "text/plain", "Lỗi khi đọc từ cảm biến");
   } else {
-    server.send(200, "text/plain", String(temperature));
-  }
-}
-
-void handleHum() {
-  // Đọc độ ẩm từ cảm biến DHT
-  float humidity = dht.readHumidity();
-  Serial.println(humidity);
-  if (isnan(humidity)) {
-    server.send(500, "text/plain", "Lỗi khi đọc độ ẩm từ cảm biến");
-  } else {
-    server.send(200, "text/plain", String(humidity));
+    server.send(200, "text/plain", String(val));
   }
 }
 
@@ -107,8 +91,7 @@ void setup() {
   /*
     Thêm đường dẫn xử lý driver
   */
-  server.on("/dht/temp", handleTemp);
-  server.on("/dht/hum", handleHum);
+  server.on("/gas", handleGas);
   server.on("/stepper", HTTP_GET, handleStepper);
 
   // Khởi động máy chủ
@@ -124,9 +107,8 @@ void setup() {
   /*
   Thiết bị gắn phụ:
     - Động cơ bước
-    - Cảm biến ánh sáng (không khai báo vì mặc định chân tương tự là input)
+    - Cảm biến khí ga ()
   */
- 
   myStepper.setSpeed(13);
   // lập lịch
   Scheduler.start(&spin);

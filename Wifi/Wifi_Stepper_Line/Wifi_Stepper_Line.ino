@@ -3,12 +3,13 @@
 #include <LeanTask.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <Servo.h>
+#include <Stepper.h>
 //NHỚ KẾT NỐI CÙNG MỘT WIFI, KIỂM TRA ĐỊA CHỈ IP TRÊN FILE INDEX
 
 /*
+ LƯU Ý: CHƯA CHẠY THỬ
 Thiết bị gắn:
-  - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2  
+  - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2,D5,D6,D7 // Đã kiểm tra, ok
   - Cảm biến dò line: Gắn dây số D vào chân D0, vcc vào 3v3// đã kiểm tra, //oke
 */
 
@@ -20,24 +21,35 @@ const char* password = "1234@56789";
 ESP8266WebServer server(80);
 
 #define LINE 16
-#define SERVO_PIN 4
 
-Servo servo;
+const int STEPS = 2048;
+Stepper myStepper = Stepper(STEPS,4,12,14,13);
+//gpio 4 12 14 13
+// d   2  6 5  7
+// o   8  10 9 11
 
-int servo_angle = 90;
+int angle = 90;
+int degreeToSteps(int degree, int STEPS = 2048){
+  if (degree == 0) return 0;
+  return STEPS / (360/degree);
+}
+
 class BlinkTask : public Task {
  protected:
   void setup() {
   }
 
   void loop() {
-    servo.write(servo_angle);
-    delay(1000);
-    servo.write(0);
+    int degreeC = 0;
+    if (angle>0){
+      degreeC = degreeToSteps(angle);
+    }
+    else degreeC = -degreeToSteps(-angle);
+    myStepper.step(degreeC);
     delay(1000);
   }
 
-} servoSpin;
+} spin;
 
 void handleLine(){
   int val = digitalRead(LINE);
@@ -50,13 +62,16 @@ void handleLine(){
   }
 }
 
-void handleServo() {
+void handleStepper() {
   // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
+  Serial.println("Da goi");
   if (server.hasArg("angle")) {
-    servo_angle = server.arg("angle").toInt()*2;
-    server.send(200, "text/plain", "Servo đã được điều khiển");
+    angle = server.arg("angle").toInt();
+    Serial.print("Get info: ");
+    Serial.println(angle);
+    server.send(200, "text/plain", "Stepper đã được điều khiển");
   } else {
-    server.send(400, "text/plain", "Thiếu tham số cho Servo");
+    server.send(400, "text/plain", "Thiếu tham số cho Stepper");
   }
 }
 
@@ -73,10 +88,10 @@ void setup() {
     delay(1000);
   }
   Serial.println("Đã kết nối thành công!");
-  
+
   //
   server.on("/line", handleLine);
-  server.on("/servo", HTTP_GET, handleServo);
+  server.on("/stepper", HTTP_GET, handleStepper);
 
   // Khởi động máy chủ
   server.enableCORS(true);
@@ -90,8 +105,9 @@ void setup() {
   // Bắt đầu cảm biến DHT và Servo
   // dht.begin();
   // pinMode(LINE,INPUT);
-  servo.attach(SERVO_PIN);
-  Scheduler.start(&servoSpin);
+  myStepper.setSpeed(13);
+  // lập lịch
+  Scheduler.start(&spin);
   Scheduler.begin();
 }
 

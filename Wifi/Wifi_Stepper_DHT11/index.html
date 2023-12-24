@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html>
+    <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
     <head>
         <title>ESP8266 Control Panel</title>
     </head>
     <body onload="updateData()">
         <h1>ESP8266 Control Panel</h1>
 
-        <h2>Điều khiển Đèn</h2>
-        <button onclick="turnOn()">Bật Đèn</button>
-        <button onclick="turnOff()">Tắt Đèn</button>
-
         <h2>Thông tin cảm biến</h2>
         <p id="temperature"></p>
         <p id="humidity"></p>
 
-        <h2>Điều khiển Stepper</h2>
-        <input type="number" id="stepperAngle" placeholder="Nhập góc (0-180)" />
-        <button onclick="controlStepper()">Điều khiển Stepper</button>
+        <h2>Điều khiển động cơ bước</h2>
+        <input type="number" id="angle" placeholder="Nhập góc (-90 đến 90)" />
+        <button onclick="controlStepper()">Điều khiển Servo</button>
 
         <script>
-            var espServer = "http://192.168.154.18"
-        
+            var espServer = "http://192.168.49.10"
             function getTemperature() {
                 fetch(espServer+"/dht/temp")
                     .then((response) => {
@@ -56,8 +52,9 @@
                 getHumidity();
             }
         
+        
             function controlStepper() {
-                const angle = document.getElementById("stepperAngle").value;
+                const angle = document.getElementById("angle").value;
                 fetch(espServer+`/stepper?angle=${angle}`)
                     .then(response => {
                         if (!response.ok) {
@@ -67,9 +64,7 @@
                     })
                     .catch(error => console.error('Error:', error));
             }
-            
-            setInterval(updateData, 1000);
-            //updateData();
+            setInterval(updateData, 2000);
         </script>
         
     </body>

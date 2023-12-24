@@ -11,7 +11,7 @@
 /*
 Thiết bị gắn:
   - Động cơ servo: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2 // đã kiểm tra, //oke 
-  - Cảm biến DHT11: Gắn dây số D vào chân D4 // đã kiểm tra, //oke
+  - Cảm biến DHT11: Gắn dây số D vào chân D1 // đã kiểm tra, //oke
 */
 
 
@@ -22,7 +22,7 @@ const char* password = "1234@56789";
 // Khởi tạo đối tượng máy chủ web
 ESP8266WebServer server(80);
 
-#define DHTPIN 2
+#define DHTPIN 5
 #define DHTTYPE DHT11
 #define SERVO_PIN 4
 
@@ -70,11 +70,6 @@ void handleServo() {
   // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
   if (server.hasArg("angle")) {
     servo_angle = server.arg("angle").toInt()*2;
-    // Serial.println(servo_angle);
-    // servo.write(servo_angle*2);
-    // delay(1000);
-    // servo.write(0);
-    // delay(1000);
     server.send(200, "text/plain", "Servo đã được điều khiển");
   } else {
     server.send(400, "text/plain", "Thiếu tham số cho Servo");
@@ -109,9 +104,10 @@ void setup() {
   Serial.println("/");
   // Bắt đầu cảm biến DHT và Servo
   // dht.begin();
+
+  //Khởi động servo
   servo.attach(SERVO_PIN);
   Scheduler.start(&servoSpin);
-
   Scheduler.begin();
 }
 
