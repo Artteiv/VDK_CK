@@ -1,20 +1,21 @@
+#include <Scheduler.h>
+#include <Task.h>
+#include <LeanTask.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-// #include <Schedule.h>
-// #include <Task.h>
-// #include <LeanTask.h>
-#include <DHT.h>
+// #include <DHT.h>
 #include <Servo.h>
 
+
 // Thiết lập thông số cho WiFi
-const char* ssid = "123456789";
-const char* password = "1234@56789";
+const char* ssid = "...";
+const char* password = "00000000";
 
 // Khởi tạo đối tượng máy chủ web
 ESP8266WebServer server(80);
 
 // Thiết lập cổng cho DHT và Servo
-int LED = 5; // GPIO16 (D0)
+int LED = 5; // GPIO5 (D1)
 
 #define DHTPIN 2
 #define DHTTYPE DHT11
@@ -22,59 +23,68 @@ int LED = 5; // GPIO16 (D0)
 #define LED 5
 #define LIGHT 8
 
-DHT dht(DHTPIN, DHTTYPE);
+// DHT dht(DHTPIN, DHTTYPE);
 Servo servo;
 
-// void handleLEDOn() {
-//   Serial.println("led on");
-//   // Xử lý bật đèn LED ở đây
-//   digitalWrite(LED, HIGH); 
-//   server.send(200, "text/plain", "Đèn đã được bật");
-// }
-
-// void handleLEDOff() {
-//   Serial.println("led on");
-//   digitalWrite(LED, LOW); // Turn LED OFF
-//   server.send(200, "text/plain", "Đèn đã được tắt");
-// }
-
-void handleTemp() {
-  // Đọc nhiệt độ từ cảm biến DHT
-  float temperature = dht.readTemperature();
-  Serial.println(temperature);
-  if (isnan(temperature)) {
-    server.send(500, "text/plain", "Lỗi khi đọc nhiệt độ từ cảm biến");
-  } else {
-    server.send(200, "text/plain", String(temperature));
-  }
+void handleLEDOn() {
+  Serial.println("led on");
+  // Xử lý bật đèn LED ở đây
+  digitalWrite(LED, HIGH); 
+  server.send(200, "text/plain", "Đèn đã được bật");
 }
 
-void handleHum() {
-  // Đọc độ ẩm từ cảm biến DHT
-  float humidity = dht.readHumidity();
-  Serial.println(humidity);
-  if (isnan(humidity)) {
-    server.send(500, "text/plain", "Lỗi khi đọc độ ẩm từ cảm biến");
-  } else {
-    server.send(200, "text/plain", String(humidity));
-  }
+void handleLEDOff() {
+  Serial.println("led on");
+  digitalWrite(LED, LOW); // Turn LED OFF
+  server.send(200, "text/plain", "Đèn đã được tắt");
 }
+int servo_angle = 90;
+class BlinkTask : public Task {
+ protected:
+  void setup() {
+  }
+
+  void loop() {
+    servo.write(servo_angle);
+    delay(1000);
+    servo.write(0);
+    delay(1000);
+  }
+
+} servoSpin;
+
+// void handleTemp() {
+//   // Đọc nhiệt độ từ cảm biến DHT
+//   float temperature = dht.readTemperature();
+//   Serial.println(temperature);
+//   if (isnan(temperature)) {
+//     server.send(500, "text/plain", "Lỗi khi đọc nhiệt độ từ cảm biến");
+//   } else {
+//     server.send(200, "text/plain", String(temperature));
+//   }
+// }
+
+// void handleHum() {
+//   // Đọc độ ẩm từ cảm biến DHT
+//   float humidity = dht.readHumidity();
+//   Serial.println(humidity);
+//   if (isnan(humidity)) {
+//     server.send(500, "text/plain", "Lỗi khi đọc độ ẩm từ cảm biến");
+//   } else {
+//     server.send(200, "text/plain", String(humidity));
+//   }
+// }
 
 void handleServo() {
   // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
   if (server.hasArg("angle")) {
-    int angle = server.arg("angle").toInt();
-    Serial.println(angle);
-    for (;;){
-      servo.write(angle*2);
-      delay(1000);
-      servo.write(0);
-      delay(1000);
-      server.send(200, "text/plain", "Servo đã được điều khiển");
-      server.on("/dht/temp", handleTemp);
-      server.on("/dht/hum", handleHum);
-      server.on("/servo", HTTP_GET, handleServo);
-    }
+    servo_angle = server.arg("angle").toInt();
+    // Serial.println(servo_angle);
+    // servo.write(servo_angle*2);
+    // delay(1000);
+    // servo.write(0);
+    // delay(1000);
+    server.send(200, "text/plain", "Servo đã được điều khiển");
   } else {
     server.send(400, "text/plain", "Thiếu tham số cho Servo");
   }
@@ -94,10 +104,10 @@ void setup() {
   }
   Serial.println("Đã kết nối thành công!");
   // Định nghĩa các endpoint và gán hàm xử lý tương ứng
-  // server.on("/led=on", handleLEDOn);
-  // server.on("/led=off", handleLEDOff);
-  server.on("/dht/temp", handleTemp);
-  server.on("/dht/hum", handleHum);
+  server.on("/led=on", handleLEDOn);
+  server.on("/led=off", handleLEDOff);
+  // server.on("/dht/temp", handleTemp);
+  // server.on("/dht/hum", handleHum);
   server.on("/servo", HTTP_GET, handleServo);
 
   // Khởi động máy chủ
@@ -110,9 +120,12 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("/");
   // Bắt đầu cảm biến DHT và Servo
-  dht.begin();
+  // dht.begin();
   servo.attach(SERVO_PIN);
   pinMode(LED,OUTPUT);
+  Scheduler.start(&servoSpin);
+
+  Scheduler.begin();
 }
 
 void loop() {
