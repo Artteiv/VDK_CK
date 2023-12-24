@@ -9,7 +9,7 @@ const int STEPS = 2048;
 // Cắm dây như hình: In1 = 8 = xanh lá , In2 = 9 = xanh biển, In3 = 10 = tím, In4 = 11 =xám
 Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
 
-
+// DT5 = TX = nâu, DT6 = RX = đen, VCC = cam, GND = Đỏ
 SoftwareSerial BTSerial(5, 6);
 
 int degreeToSteps(int degree, int STEPS = 2048){
