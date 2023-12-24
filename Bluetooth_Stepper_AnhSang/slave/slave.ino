@@ -6,7 +6,7 @@
 #include <Stepper.h>
 const int STEPS = 2048;
 
-// Cắm dây như hình
+// Cắm dây như hình: In1 = 8, In2 = 9, In3 = 10, In4 = 11
 Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
 
 
