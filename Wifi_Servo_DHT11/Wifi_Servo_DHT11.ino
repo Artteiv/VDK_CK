@@ -17,7 +17,6 @@ ESP8266WebServer server(80);
 #define DHTPIN 2
 #define DHTTYPE DHT11
 #define SERVO_PIN 4
-#define LIGHT 8
 
 DHT dht(DHTPIN, DHTTYPE);
 Servo servo;

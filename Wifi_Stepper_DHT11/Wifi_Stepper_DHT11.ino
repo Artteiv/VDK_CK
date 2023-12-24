@@ -5,6 +5,7 @@
 // #include <LeanTask.h>
 #include <DHT.h>
 #include <Servo.h>
+#include <Stepper.h>
 
 // Thiết lập thông số cho WiFi
 const char* ssid = "123456789";
@@ -14,29 +15,19 @@ const char* password = "1234@56789";
 ESP8266WebServer server(80);
 
 // Thiết lập cổng cho DHT và Servo
-int LED = 5; // GPIO16 (D0)
 
 #define DHTPIN 2
 #define DHTTYPE DHT11
-#define SERVO_PIN 4
-#define LED 5
-#define LIGHT 8
+const int STEPS = 2048;
+Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
+
+int degreeToSteps(int degree, int STEPS = 2048){
+  if (degree == 0) return 0;
+  return STEPS / (360/degree);
+}
 
 DHT dht(DHTPIN, DHTTYPE);
 Servo servo;
-
-// void handleLEDOn() {
-//   Serial.println("led on");
-//   // Xử lý bật đèn LED ở đây
-//   digitalWrite(LED, HIGH); 
-//   server.send(200, "text/plain", "Đèn đã được bật");
-// }
-
-// void handleLEDOff() {
-//   Serial.println("led on");
-//   digitalWrite(LED, LOW); // Turn LED OFF
-//   server.send(200, "text/plain", "Đèn đã được tắt");
-// }
 
 void handleTemp() {
   // Đọc nhiệt độ từ cảm biến DHT
@@ -63,7 +54,8 @@ void handleHum() {
 void handleStepper() {
   // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
   if (server.hasArg("angle")) {
-    int degreeC = degreeToSteps(90);
+    int angle = server.arg("angle").toInt();
+    int degreeC = degreeToSteps(angle);
   if (1) {
     myStepper.step(degreeC);
     Serial.print("Stepped 90\n");
@@ -97,7 +89,7 @@ void setup() {
   // server.on("/led=off", handleLEDOff);
   server.on("/dht/temp", handleTemp);
   server.on("/dht/hum", handleHum);
-  server.on("/servo", HTTP_GET, handleServo);
+  server.on("/stepper", HTTP_GET, handleServo);
 
   // Khởi động máy chủ
   server.enableCORS(true);
@@ -117,34 +109,3 @@ void setup() {
 void loop() {
   server.handleClient(); // Xử lý các yêu cầu từ client
 }
-
-
-#include <Stepper.h>
-const int STEPS = 2048;
-Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
-
-int degreeToSteps(int degree, int STEPS = 2048){
-  if (degree == 0) return 0;
-  return STEPS / (360/degree);
-}
-
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  myStepper.setSpeed(13);
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  int degreeC = degreeToSteps(90);
-  if (1) {
-    myStepper.step(degreeC);
-    Serial.print("Stepped 90\n");
-  }
-  else {
-    myStepper.step(-degreeC);
-    Serial.print("Stepped -90\n");
-  }
-  delay(200);
-}
-
