@@ -7,5 +7,5 @@
 #### Động cơ
 
 #### Truyền nhận
-
+- Bluetooth: Master dây cầu vồng, Slave dây Đức
 #### Module
