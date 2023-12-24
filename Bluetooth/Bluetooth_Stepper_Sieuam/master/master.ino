@@ -10,6 +10,7 @@ int duration;
 int distance;
 //Cổng D10 = TX = cam, D11 = RX = đỏ, 5V = xanh lá, GND = vàng, nhớ chuyển Both NL & CR
 SoftwareSerial BTSerial(10, 11);
+// Cổng trig ở D5, cổng echo ở D6.
 
 void setup() {
   // put your setup code here, to run once:
