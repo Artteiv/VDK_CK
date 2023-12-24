@@ -6,45 +6,25 @@
     <body onload="updateData()">
         <h1>ESP8266 Control Panel</h1>
 
-        <h2>Điều khiển Đèn</h2>
-        <button onclick="turnOn()">Bật Đèn</button>
-        <button onclick="turnOff()">Tắt Đèn</button>
 
         <h2>Thông tin cảm biến</h2>
-        <p id="temperature"></p>
-        <p id="humidity"></p>
+        <!-- <p id="temperature"></p>
+        <p id="humidity"></p> -->
+        <p id ="light"></p>
+        <!-- <p id="line"></p>
+        <p id="joystick"></p>
+        <p id="sieuam"></p>
+        <p id="gas"></p> -->
 
         <h2>Điều khiển Servo</h2>
         <input type="number" id="servoAngle" placeholder="Nhập góc (0-180)" />
         <button onclick="controlServo()">Điều khiển Servo</button>
 
         <script>
-            var espServer = "http://192.168.154.18"
+            var espServer = "http://192.168.49.10"
         
-            function turnOn() {
-                fetch(espServer+"/led=on")
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("LED turned on");
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-        
-            function turnOff() {
-                fetch(espServer+"/led=off")
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("LED turned off");
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-        
-            function getTemperature() {
-                fetch(espServer+"/dht/temp")
+            function getLight() {
+                fetch(espServer+"/light")
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -52,30 +32,13 @@
                         return response.text();
                     })
                     .then((data) => {
-                        console.log("Temperature:", data);
-                        document.getElementById("temperature").innerText = "Nhiệt độ: " + data + " °C";
+                        console.log("Light:", data);
+                        document.getElementById("light").innerText = "Ánh sáng: " + data ;
                     })
                     .catch(error => console.error('Error:', error));
             }
-        
-            function getHumidity() {
-                fetch(espServer+"/dht/hum")
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then((data) => {
-                        console.log("Humidity:", data);
-                        document.getElementById("humidity").innerText = "Độ ẩm: " + data + " %";
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-        
             function updateData() {
-                getTemperature();
-                getHumidity();
+                getLight();
             }
         
             function controlServo() {
@@ -90,7 +53,7 @@
                     .catch(error => console.error('Error:', error));
             }
             
-            setInterval(updateData, 10000);
+            setInterval(updateData, 1000);
             //updateData();
         </script>
         
