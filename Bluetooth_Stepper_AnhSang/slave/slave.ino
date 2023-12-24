@@ -5,10 +5,15 @@
 #include <SoftwareSerial.h>
 #include <Stepper.h>
 const int STEPS = 2048;
+
+// Cắm dây như hình
 Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
 
+
+// Cổng D5 = RX, D6 = TX
 SoftwareSerial BTSerial(5, 6);
 
+// Hàm degree to steps
 int degreeToSteps(int degree, int STEPS = 2048){
   if (degree == 0) return 0;
   return STEPS / (360/degree);

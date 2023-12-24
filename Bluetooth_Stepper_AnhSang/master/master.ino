@@ -22,7 +22,7 @@ void loop() {
   
   // In ra màn hình bên master giá trị của chân tương tự A0
   Serial.println(value);
-  // Gửi giá trị qua slaveZ
+  // Gửi giá trị qua slave
   BTSerial.write(value);
   delay(2000);
 }
