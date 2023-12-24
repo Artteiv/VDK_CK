@@ -10,7 +10,7 @@ const int STEPS = 2048;
 Stepper myStepper = Stepper(STEPS, 8, 10, 9, 11);
 
 
-// Cổng D5 = RX, D6 = TX
+// Cổng D5 = TX, D6 = RX
 SoftwareSerial BTSerial(5, 6);
 
 // Hàm degree to steps

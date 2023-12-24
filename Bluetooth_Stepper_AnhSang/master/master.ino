@@ -4,7 +4,7 @@
 // AT+UART=9600,0,0
 #include <SoftwareSerial.h>
 int lightPin = 0;
-// Nối chân số 10 = RX , chân D11 = TX
+//Cổng D10 = TX = cam, D11 = RX = đỏ, 5V = xanh lá, GND = vàng, nhớ chuyển Both NL & CR
 SoftwareSerial BTSerial(10, 11);
 
 void setup() {
