@@ -8,7 +8,7 @@
 
 /*
 Thiết bị gắn:
-  - Động cơ Stepper: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2,D5,D6,D7 // Đã kiểm tra, ok
+  - Động cơ Stepper: Gắn dây IN1~D2, IN2~D5, IN3~D6, IN4~D7 // Đã kiểm tra, ok
   - Cảm biến siêu âm: Gắn chân trig vào chân D1, chân echo vào chân D0, // Đã kiểm tra, ok
 */
 

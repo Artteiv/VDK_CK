@@ -4,14 +4,13 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Stepper.h>
-#include <DHT.h>
 //NHỚ KẾT NỐI CÙNG MỘT WIFI, KIỂM TRA ĐỊA CHỈ IP TRÊN FILE INDEX
 
 /*
  LƯU Ý: CHƯA CHẠY THỬ
 Thiết bị gắn:
   - Động cơ Stepper: Gắn dây IN1~D2, IN2~D5, IN3~D6, IN4~D7 // chân cắm đúng, chưa chạy thử
-  - Cảm biến DHT11: Gắn dây số D vào chân D4, nguồn vào 3v3 // đã kiểm tra, //oke
+  - Cảm biến ánh sáng: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // chân cắm đúng chưa chạy thử
 */
 
 // Thiết lập thông số cho WiFi
@@ -21,11 +20,8 @@ const char* password = "1234@56789";
 // Khởi tạo đối tượng máy chủ web
 ESP8266WebServer server(80);
 
-#define DHTPIN 2
-#define DHTTYPE DHT11
+#define LIGHT 0
 
-
-DHT dht(DHTPIN, DHTTYPE);
 const int STEPS = 2048;
 Stepper myStepper = Stepper(STEPS,4,12,14,13);
 //gpio 4 12 14 13
@@ -55,25 +51,13 @@ class BlinkTask : public Task {
 
 } spin;
 
-void handleTemp() {
-  // Đọc nhiệt độ từ cảm biến DHT
-  float temperature = dht.readTemperature();
-  Serial.println(temperature);
-  if (isnan(temperature)) {
-    server.send(500, "text/plain", "Lỗi khi đọc nhiệt độ từ cảm biến");
-  } else {
-    server.send(200, "text/plain", String(temperature));
-  }
-}
-
-void handleHum() {
-  // Đọc độ ẩm từ cảm biến DHT
-  float humidity = dht.readHumidity();
-  Serial.println(humidity);
-  if (isnan(humidity)) {
+void handleLight() {
+  int value = analogRead(LIGHT);
+  Serial.println(value);
+  if (isnan(value)) {
     server.send(500, "text/plain", "Lỗi khi đọc độ ẩm từ cảm biến");
   } else {
-    server.send(200, "text/plain", String(humidity));
+    server.send(200, "text/plain", String(value));
   }
 }
 
@@ -107,8 +91,7 @@ void setup() {
   /*
     Thêm đường dẫn xử lý driver
   */
-  server.on("/dht/temp", handleTemp);
-  server.on("/dht/hum", handleHum);
+  server.on("/light",HTTP_GET, handleLight);
   server.on("/stepper", HTTP_GET, handleStepper);
 
   // Khởi động máy chủ
@@ -126,8 +109,6 @@ void setup() {
     - Động cơ bước
     - Cảm biến ánh sáng (không khai báo vì mặc định chân tương tự là input)
   */
-  dht.begin();
-  delay(1000);
   myStepper.setSpeed(13);
   // lập lịch
   Scheduler.start(&spin);

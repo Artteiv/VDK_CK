@@ -7,8 +7,8 @@
     <body onload="updateData()">
         <h1>ESP8266 Control Panel</h1>
 
-        <h2>Thông tin cảm biến siêu âm</h2>
-        <p id="sieuam"></p>
+        <h2>Thông tin cảm biến dò line</h2>
+        <p id="line"></p>
 
         <h2>Điều khiển động cơ bước</h2>
         <input type="number" id="angle" placeholder="Nhập góc (-90 đến 90)" />
@@ -16,8 +16,8 @@
 
         <script>
             var espServer = "http://192.168.49.10"
-            function getSieuam() {
-                fetch(espServer+"/sieuam")
+            function getLine() {
+                fetch(espServer+"/line")
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -25,14 +25,16 @@
                         return response.text();
                     })
                     .then((data) => {
-                        console.log("sieuam:", data);
-                        document.getElementById("sieuam").innerText = "Khoảng cách đến vật cản: "+ data +"cm." ;
+                        console.log("Line:", data);
+                        let p = parseInt(data);
+    
+                        document.getElementById("line").innerText = "Line "+(p?"Đen":"Trắng") ;
                     })
                     .catch(error => console.error('Error:', error));
             }
         
             function updateData() {
-                getSieuam();
+                getLine();
             }
         
             function controlStepper() {

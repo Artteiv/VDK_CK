@@ -108,7 +108,7 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("/");
   // Bắt đầu cảm biến DHT và Servo
-  // dht.begin();
+  dht.begin();
   servo.attach(SERVO_PIN);
   Scheduler.start(&servoSpin);
 
