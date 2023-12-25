@@ -24,6 +24,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   while (BTSerial.available()) {
+    
     String c = BTSerial.readString();
     Serial.println(c);
     int value = c.toInt();

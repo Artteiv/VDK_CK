@@ -31,14 +31,13 @@ void loop() {
       digitalWrite(input1, HIGH);
       digitalWrite(input2, LOW);
       delay(1000);
-    } 
-    else if (val == 0){
-      Serial.println("Vao 36");
+    } else if (val == 0) {
+      Serial.println("decoode2");
       analogWrite(enableA, 255);
       digitalWrite(input1, LOW);
       digitalWrite(input2, HIGH);
       delay(1000);
     }
-      IrReceiver.resume();
-
+    IrReceiver.resume();
   }
+}
