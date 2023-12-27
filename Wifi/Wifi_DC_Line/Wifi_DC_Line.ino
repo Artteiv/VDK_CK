@@ -22,75 +22,107 @@ const int enableDC = 14;  // Chân enable động cơ DC - D5
 const int input1DC = 12;  // Chân input1 động cơ DC - D6
 const int input2DC = 13;  // Chân input2 động cơ DC - D7
 
-// Biến để lưu tốc độ hiện tại của động cơ DC
-int currentSpeed = 0;
-
-// Hằng số đại diện cho tốc độ tối đa và tốc độ tối thiểu
-const int MAX_SPEED = 255;
-const int MIN_SPEED = 0;
-
 // Hàm điều khiển động cơ DC theo hướng thuận
-void runDCForward() {
-  digitalWrite(enableDC, HIGH);
-  digitalWrite(input1DC, HIGH);
-  digitalWrite(input2DC, LOW);
-}
-
-// Hàm điều khiển động cơ DC theo hướng nghịch
-void runDCBackward() {
-  digitalWrite(enableDC, HIGH);
-  digitalWrite(input1DC, LOW);
-  digitalWrite(input2DC, HIGH);
-}
-
-// Hàm dừng động cơ DC
-void stopDC() {
-  digitalWrite(enableDC, LOW);
-  digitalWrite(input1DC, LOW);
-  digitalWrite(input2DC, LOW);
-}
-
-// Hàm tăng tốc độ động cơ DC
-void accelerateDC() {
-  currentSpeed += 5; // Điều chỉnh tăng tốc độ theo yêu cầu của bạn
-  // Đặt giới hạn tốc độ tối đa
-  if (currentSpeed > MAX_SPEED) {
-    currentSpeed = MAX_SPEED;
-  }
-
-  // Áp dụng tốc độ vào điều khiển động cơ DC
-  analogWrite(enableDC, currentSpeed);
-}
-
-// Hàm giảm tốc độ động cơ DC
-void decelerateDC() {
-  currentSpeed -= 5; // Điều chỉnh giảm tốc độ theo yêu cầu của bạn
-
-  // Đặt giới hạn tốc độ tối thiểu
-  if (currentSpeed < MIN_SPEED) {
-    currentSpeed = MIN_SPEED;
-  }
-
-  // Áp dụng tốc độ vào điều khiển động cơ DC
-  analogWrite(enableDC, currentSpeed);
-}
-int direction = 0;
+int speed;
+int type = 0;
 class BlinkTask : public Task {
-    void setup() {
+  void setup() {
+    curspeed = 0;
   }
-
-  void loop() {
-    if (direction == 1) {
-      runDCForward();
-    } else if (direction == 2) {
-      runDCBackward();
-    } else if (direction == 3) {
-      accelerateDC();
-    } else if (direction == 4) {
-      decelerateDC();
-    } else {
-      stopDC();
+  int curspeed = 0;
+  int v1,v2;
+  void tov(int speed){
+    if (speed>=0){
+      v2 = 0;
+      v1 = speed;
     }
+    else{
+      v1 = 0;
+      v2 = -speed;
+    }
+  }
+  void apply_speed(){
+    tov(curspeed);
+    if (v1==0){
+      digitalWrite(input1DC,LOW);
+    }
+    else{
+      analogWrite(input1DC,v1);
+    }
+    if (v2==0){
+      digitalWrite(input2DC,LOW);
+    }
+    else{
+      analogWrite(input2DC,v2);
+    }
+    
+  }
+  //nhanh dần : 0~1000 ->0 ~1000
+  // chậm dần : 1000 ~ 0 -> ...
+  // Thuận chiều:  
+  // hàm gọi sẽ gán giá trị speed 
+  void thuan_chieu_nhanh_dan(){
+    if (curspeed<0) curspeed=0;
+    curspeed+=100;
+    if (curspeed>1000){
+      curspeed = 0;
+    }
+    apply_speed();
+  }
+  void thuan_chieu_cham_dan(){
+    if (curspeed>1000) curspeed = 1000;
+    curspeed -= 100;
+    if (curspeed<0) curspeed = 1000;
+    apply_speed();
+  }
+  void nguoc_chieu_nhanh_dan(){
+    if (curspeed>0) curspeed = 0;
+    if (curspeed< -1000) curspeed = 0;
+    curspeed -=100;
+    apply_speed();
+  }
+  void nguoc_chieu_cham_dan(){
+    if (curspeed>0) curspeed = -1000;
+    if (curspeed<-1000) curspeed = -1000;
+    curspeed +=100;
+    apply_speed();
+  }
+  void thuan_chieu_quay_deu(){
+    curspeed = 1000;
+    apply_speed();
+  }
+  void nguoc_chieu_quay_deu(){
+    curspeed = -1000;
+    apply_speed();
+  } 
+  void loop() {
+    switch (type)
+    {
+      case 1: // thuan_chieu_nhanh_dan
+        thuan_chieu_nhanh_dan();
+      break;
+      case 2: // thuan_chieu_cham_dan
+        thuan_chieu_cham_dan();
+      break;
+      case 3: // nguoc_chieu_nhanh_dan
+        nguoc_chieu_nhanh_dan();
+      break;
+      case 4: // nguoc_chieu_cham_dan
+        nguoc_chieu_cham_dan();
+      break;
+      case 5: // thuan_chieu_quay_deu
+        thuan_chieu_quay_deu();
+      break;
+      case 6: // nguoc_chieu_quay_deu
+        nguoc_chieu_quay_deu();
+      break;
+    default:
+      break;
+    }
+    Serial.print(v1);
+    Serial.print("-");
+    Serial.println(v2);
+    delay(1000);
   }
 } DCTask;
 
@@ -109,7 +141,7 @@ void handleLine(){
 void handleDC() {
   // Xử lý yêu cầu điều khiển động cơ DC
   if (server.hasArg("direction")) {
-    direction = server.arg("direction").toInt();
+    type = server.arg("direction").toInt();
     server.send(200, "text/plain", "Đã điều khiển động cơ DC");
   } else {
 server.send(400, "text/plain", "Thiếu tham số cho động cơ DC");
@@ -130,7 +162,7 @@ void setup() {
   Serial.println("Đã kết nối thành công!");
 
   // Thiết lập các chân điều khiển động cơ DC
-  pinMode(enableDC, OUTPUT);
+  // pinMode(enableDC, OUTPUT);
   pinMode(input1DC, OUTPUT);
   pinMode(input2DC, OUTPUT);
   // pinMode(LINE, INPUT);

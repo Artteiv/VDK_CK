@@ -12,59 +12,65 @@
 
         <h2>Điều khiển DC</h2>
         <select id="dc">
-            <option value="3">Nhanh dần</option>
-            <option value="4">Chậm dần</option>
-            <option value="1">Cùng chiều</option>
-            <option value="2">Ngược chiều</option>
-          </select>
-          
-        <button onclick="controlDC()">Điều khiển Servo</button>
+            <option value="1">Thuận chiều nhanh dần</option>
+            <option value="2">Thuận chiều chậm dần</option>
+            <option value="3">Ngược chiều nhanh dần</option>
+            <option value="4">Ngược chiều chậm dần</option>
+            <option value="5">Thuận chiều quay đều</option>
+            <option value="6">Ngược chiều quay đều</option>
+        </select>
+
+        <button onclick="controlDC()">Điều khiển DC</button>
+        <br />
+        <p id="err"></p>
 
         <script>
-            var espServer = "http://192.168.94.10"
-        
+            var espServer = "http://192.168.94.10";
+
             function getSieuam() {
-                fetch(espServer+"/sieuam")
+                fetch(espServer + "/sieuam")
                     .then((response) => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                            throw new Error("Network response was not ok");
                         }
                         return response.text();
                     })
                     .then((data) => {
                         console.log("sieuam:", data);
-                        document.getElementById("sieuam").innerText = "Khoảng cách đến vật cản: "+ data +"cm." ;
+                        document.getElementById("sieuam").innerText =
+                            "Khoảng cách đến vật cản: " + data + "cm.";
                     })
-                    .catch(error => console.error('Error:', error));
+                    .catch((error) => console.error("Error:", error));
             }
-        
+
             function updateData() {
                 getSieuam();
             }
-        
+
             function controlDC() {
-                const selectElement = document.getElementById('dc');
+                const selectElement = document.getElementById("dc");
                 const selectedValue = selectElement.value;
-            
+        
                 // Thực hiện fetch dữ liệu dựa trên giá trị đã chọn
-                fetch(espServer+`/dc?direction=${selectedValue}`)
-                .then(response => {
+                fetch(espServer + `/dc?direction=${selectedValue}`)
+                  .then((response) => {
                     if (!response.ok) {
-                    throw new Error('Có lỗi khi tải dữ liệu');
+                      document.getElementById("err").innerText = "Lỗi";
+                      throw new Error("Có lỗi khi tải dữ liệu");
                     }
                     return response.json();
-                })
-                .then(data => {
+                  })
+                  .then((data) => {
                     // Xử lý dữ liệu ở đây
-                    console.log('Dữ liệu nhận được:', data);
-                })
-                .catch(error => {
-                    console.error('Đã xảy ra lỗi:', error);
-                });
+                    document.getElementById("err").innerText = "DC đã được điều khiển";
+                  })
+                  .catch((error) => {
+                    document.getElementById("err").innerText = "DC đã được điều khiển";
+                    console.error("Đã xảy ra lỗi:", error);
+                  });
               }
-              
+
             setInterval(updateData, 1000);
         </script>
-        
     </body>
 </html>
