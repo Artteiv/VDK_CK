@@ -40,8 +40,8 @@ struct DC{
     }
     
   }
-  //nhanh dần : 0~1000 ->0 ~1000
-  // chậm dần : 1000 ~ 0 -> ...
+  //nhanh dần : 0~255 ->0 ~255
+  // chậm dần : 255 ~ 0 -> ...
   // Thuận chiều:  
   // hàm gọi sẽ gán giá trị speed 
   
@@ -49,36 +49,36 @@ struct DC{
   void thuan_chieu_nhanh_dan(){
   
     if (curspeed<0) curspeed=0;
-    curspeed+=100;
-    if (curspeed>1000){
+    curspeed+=25;
+    if (curspeed>255){
       curspeed = 0;
     }
     apply_speed();
   }
   void thuan_chieu_cham_dan(){
-    if (curspeed>1000) curspeed = 1000;
-    curspeed -= 100;
-    if (curspeed<0) curspeed = 1000;
+    if (curspeed>255) curspeed = 255;
+    curspeed -= 25;
+    if (curspeed<0) curspeed = 255;
     apply_speed();
   }
   void nguoc_chieu_nhanh_dan(){
     if (curspeed>0) curspeed = 0;
-    if (curspeed< -1000) curspeed = 0;
-    curspeed -=100;
+    if (curspeed< -255) curspeed = 0;
+    curspeed -=25;
     apply_speed();
   }
   void nguoc_chieu_cham_dan(){
-    if (curspeed>0) curspeed = -1000;
-    if (curspeed<-1000) curspeed = -1000;
-    curspeed +=100;
+    if (curspeed>0) curspeed = -255;
+    if (curspeed<-255) curspeed = -255;
+    curspeed +=25;
     apply_speed();
   }
   void thuan_chieu_quay_deu(){
-    curspeed = 1000;
+    curspeed = 255;
     apply_speed();
   }
   void nguoc_chieu_quay_deu(){
-    curspeed = -1000;
+    curspeed = -255;
     apply_speed();
   } 
   void loop(int type) {
@@ -108,7 +108,7 @@ struct DC{
     Serial.print(v1);
     Serial.print("-");
     Serial.println(v2);
-    delay(1000);
+    delay(255);
   }
 } DCTask;
 
@@ -133,12 +133,12 @@ void loop() {
     if (c== '1')
     {
       DCTask.thuan_chieu_nhanh_dan();
-      delay(1000);
+      delay(255);
     }
     else {
       // Điều khiển tốc độ động cơ
       DCTask.nguoc_chieu_cham_dan();
-      delay(1000);  
+      delay(255);  
     }
   }
   if (Serial.available())
