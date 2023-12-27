@@ -15,6 +15,12 @@ Slave dây Đức
     - RX 6,
     - TX 5
 - Nếu có nhu cầu sửa code:
-#### 
-
+#### Hồng ngoại:
+#### Truyền: // Nên để 3.3v (nguồn 3.3)
+- Tìm kiếm dấu trừ trên thiết bị
+- Dấu trừ luôn là dây âm
+- Tiếp theo dây âm là dây dương
+- Cuối cùng là tín hiệu 
+#### Nhận:
+- Tương tự như truyền
 #### Module
