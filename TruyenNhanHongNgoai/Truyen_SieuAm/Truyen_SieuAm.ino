@@ -14,7 +14,7 @@ void setup() {
   
 void loop() { 
   delay(300);
-  unsigned long duration; // biến đo thời gian
+  int duration; // biến đo thời gian
   int distance;           // biến lưu khoảng cách
 
   digitalWrite(trigPin, LOW); // tắt chân trig
@@ -24,7 +24,7 @@ void loop() {
   digitalWrite(trigPin, LOW); // tắt chân trig
   duration = pulseIn(echoPin, HIGH);
   
-  distance = duration * 0.034 / 2;   // Tính khoảng cách đến vật.
+  distance = duration*0.034/2.0;   // Tính khoảng cách đến vật.
   Serial.print(distance);
   Serial.println("cm"); 
 
