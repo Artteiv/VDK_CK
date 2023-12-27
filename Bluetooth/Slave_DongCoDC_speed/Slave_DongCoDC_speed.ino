@@ -8,7 +8,7 @@ SoftwareSerial BTSerial(10, 11); // RX | TX
 
 int enableA = 3;
 int input1 = 5;
-int input2 = 4;
+int input2 = 6;
 
 struct DC{
   int speed;
