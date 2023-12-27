@@ -7,8 +7,8 @@
     <body onload="updateData()">
         <h1>ESP8266 Control Panel</h1>
 
-        <h2>Thông tin cảm biến </h2>
-        <p id="sieuam"></p>
+        <h2>Thông tin cảm biến Joystick</h2>
+        <p id="joystick"></p>
 
         <h2>Điều khiển DC</h2>
         <select id="dc">
@@ -23,8 +23,8 @@
         <script>
             var espServer = "http://192.168.94.10"
         
-            function getSieuam() {
-                fetch(espServer+"/sieuam")
+            function getJoystick() {
+                fetch(espServer+"/joystick")
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -32,14 +32,14 @@
                         return response.text();
                     })
                     .then((data) => {
-                        console.log("sieuam:", data);
-                        document.getElementById("sieuam").innerText = "Khoảng cách đến vật cản: "+ data +"cm." ;
+                        console.log("joystick:", data);
+                        document.getElementById("joystick").innerText = "Tọa độ x: "+ data ;
                     })
                     .catch(error => console.error('Error:', error));
             }
         
             function updateData() {
-                getSieuam();
+                getJoystick();
             }
         
             function controlDC() {

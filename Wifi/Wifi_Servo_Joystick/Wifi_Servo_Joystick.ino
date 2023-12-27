@@ -13,10 +13,9 @@ ESP8266WebServer server(80);
 /*
 Thiết bị gắn:
   - Động cơ DC: enable - D5, input1-D6, input2-D7  
-  - Cảm biến siêu âm: Gắn chân trig vào chân D1, chân echo vào chân D0, 
+  - Cảm biến joystck: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 
 */
-#define trig 5  //D1
-#define echo 16  //D0
+#define x 0
 
 // Khai báo các chân điều khiển động cơ DC
 const int enableDC = 14;  // Chân enable động cơ DC - D5
@@ -95,19 +94,14 @@ class BlinkTask : public Task {
   }
 } DCTask;
 
-
-void handleSieuam() {
-  digitalWrite(trig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  int duration = pulseIn(echo, HIGH);
-  int distance = duration * 0.034 / 2.0;
-  Serial.print("khoang cach = ");
-  Serial.print(distance);
-  Serial.print("cm\n");
-  server.send(200, "text/plain", String(distance));
+void handleJoystick() {
+  int val = analogRead(gasPin);
+  Serial.println(val);
+  if (isnan(val)) {
+    server.send(500, "text/plain", "Lỗi khi đọc từ cảm biến");
+  } else {
+    server.send(200, "text/plain", String(val));
+  }
 }
 
 void handleDC() {
@@ -137,13 +131,11 @@ void setup() {
   pinMode(enableDC, OUTPUT);
   pinMode(input1DC, OUTPUT);
   pinMode(input2DC, OUTPUT);
-  pinMode(trig, OUTPUT);
-  pinMode(echo, INPUT);
   // Thiết lập chân động cơ DC và thử nghiệm
   stopDC();  // Dừng động cơ khi khởi động
   
   // Thêm đường dẫn xử lý driver
-  server.on("/sieuam", handleSieuam);
+  server.on("/joystick", handleJoystick);
   server.on("/dc", HTTP_GET, handleDC);
 
   // Khởi động máy chủ
