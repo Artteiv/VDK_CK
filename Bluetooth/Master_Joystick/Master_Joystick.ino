@@ -21,7 +21,7 @@ bool joystick(int thresholdX = 550, int thresholdY = 550, int thresholdZ= LOW) {
 void setup() { 
   Serial.begin(9600);
   BTSerial.begin(9600); // HC-05 default speed in AT command
-  pinMode(JoyStickZ, INPUT);
+  pinMode(JoyStickZ, INPUT_PULLUP);
 } 
 void loop(){
   Serial.print("Sent ");

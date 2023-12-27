@@ -20,7 +20,7 @@ bool joystick(int thresholdX = 550, int thresholdY = 550, int thresholdZ= 3) {
 void setup() { 
   Serial.begin(9600);
   IrSender.begin(3); 
-  pinMode(JoyStickZ, INPUT);
+  pinMode(JoyStickZ, INPUT_PULLUP);
 } 
 void loop(){
   Serial.print("Sent ");
