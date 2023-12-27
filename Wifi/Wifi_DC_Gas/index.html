@@ -12,10 +12,31 @@
 
     <h2>Điều khiển DC</h2>
     <select id="dc">
-      <option value="3">Nhanh dần</option>
-      <option value="4">Chậm dần</option>
-      <option value="1">Cùng chiều</option>
-      <option value="2">Ngược chiều</option>
+      
+      <!-- case 1: // thuan_chieu_nhanh_dan
+        thuan_chieu_nhanh_dan();
+        break;
+        case 2: // thuan_chieu_cham_dan
+        thuan_chieu_cham_dan();
+        break;
+        case 3: // nguoc_chieu_nhanh_dan
+        nguoc_chieu_nhanh_dan();
+        break;
+        case 4: // nguoc_chieu_cham_dan
+        nguoc_chieu_cham_dan();
+        break;
+        case 5: // thuan_chieu_quay_deu
+        thuan_chieu_quay_deu();
+        break;
+        case 6: // nguoc_chieu_quay_deu
+        nguoc_chieu_quay_deu();
+        break; -->
+      <option value="1">Thuận chiều nhanh dần</option>
+      <option value="2">Thuận chiều chậm dần</option>
+      <option value="3">Ngược chiều nhanh dần</option>
+      <option value="4">Ngược chiều chậm dần</option>
+      <option value="5">Thuận chiều quay đều</option>
+      <option value="6">Ngược chiều quay đều</option>
     </select>
 
     <button onclick="controlDC()">Điều khiển DC</button>
@@ -23,7 +44,7 @@
     <p id="err"></p>
 
     <script>
-      var espServer = "http://192.168.236.10";
+      var espServer = "http://192.168.195.10";
 
       function getGas() {
         fetch(espServer + "/gas")
