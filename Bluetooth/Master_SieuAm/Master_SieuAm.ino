@@ -21,7 +21,7 @@ void setup() {
 }
 
 void loop() {
-  unsigned long duration; // biến đo thời gian
+  int duration; // biến đo thời gian
   int distance;           // biến lưu khoảng cách
 
   digitalWrite(trigPin, LOW); // tắt chân trig
@@ -30,7 +30,7 @@ void loop() {
   delayMicroseconds(10); // xung có độ dài 10 microSeconds
   digitalWrite(trigPin, LOW); // tắt chân trig
   duration = pulseIn(echoPin, HIGH);
-  distance = duration * 0.034 / 2;
+  distance = duration * 0.034 / 2.0;
 
   Serial.print(distance);
   Serial.println("cm"); 
