@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(9600);
   IrReceiver.begin(PIN_RECV, ENABLE_LED_FEEDBACK);
 }
-
+bool p =1 ;
 void loop() {
   //  Serial.println("Received something...");
   //  Serial.println();
@@ -36,7 +36,7 @@ void loop() {
       digitalWrite(input2, LOW);
       if (speed<250)
       speed+=5;
-      analogWrite(ena,speed);
+      analogWrite(enableA,speed);
       delay(1000);
     } 
     else if (val == 0){
@@ -50,7 +50,7 @@ void loop() {
 
       if (speed<250)
       speed+=5;
-      analogWrite(ena, speed);
+      analogWrite(enableA, speed);
       delay(1000);
     }
       IrReceiver.resume();

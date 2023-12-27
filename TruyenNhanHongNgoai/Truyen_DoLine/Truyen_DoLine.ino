@@ -15,7 +15,7 @@ void loop() {
   val = digitalRead(LINE);
   Serial.println(val);
   if (val == 0) {
-    IrSender.sendNECRaw(0); 
+    IrSender.sendNECRaw(2); 
     delay(200);
   }
   else{

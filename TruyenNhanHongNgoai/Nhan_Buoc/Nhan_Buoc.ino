@@ -28,7 +28,7 @@ void loop() {
       Serial.println("decode");
       myStepper.step(degreeToSteps(90));
       // IrReceiver.resume();
-    } else if (val == 0) {
+    } else if (val == 2) {
       Serial.println("decode2");
       myStepper.step(degreeToSteps(-90));
       // IrReceiver.resume();

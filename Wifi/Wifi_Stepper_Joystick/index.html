@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
+    <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
     <head>
         <title>ESP8266 Control Panel</title>
     </head>
     <body onload="updateData()">
         <h1>ESP8266 Control Panel</h1>
 
-        <h2>Thông tin cảm biến</h2>
-        <p id="gas"></p>
+        <h2>Thông tin cảm biến Joystick</h2>
+        <p id="joystick"></p>
 
-        <h2>Điều khiển Servo</h2>
-        <input type="number" id="servoAngle" placeholder="Nhập góc (0-180)" />
-        <button onclick="controlServo()">Điều khiển Servo</button>
+        <h2>Điều khiển động cơ bước</h2>
+        <input type="number" id="angle" placeholder="Nhập góc (-90 đến 90)" />
+        <button onclick="controlStepper()">Điều khiển Servo</button>
 
         <script>
-            var espServer = "http://192.168.195.10"
-            function getGas() {
-                fetch(espServer+"/gas")
+            var espServer = "http://192.168.94.10"
+            function getJoystick() {
+                fetch(espServer+"/joystick")
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -24,29 +25,28 @@
                         return response.text();
                     })
                     .then((data) => {
-                        console.log("Gas:", data);
-                        document.getElementById("gas").innerText = "Gas: " + data;
+                        console.log("joystick:", data);
+                        document.getElementById("joystick").innerText = "Tọa độ x: "+ data ;
                     })
                     .catch(error => console.error('Error:', error));
             }
+        
             function updateData() {
-                getGas();
+                getJoystick();
             }
         
-            function controlServo() {
-                const angle = document.getElementById("servoAngle").value;
-                fetch(espServer+`/servo?angle=${angle}`)
+            function controlStepper() {
+                const angle = document.getElementById("angle").value;
+                fetch(espServer+`/stepper?angle=${angle}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
-                        console.log("Servo controlled");
+                        console.log("Stepper controlled");
                     })
                     .catch(error => console.error('Error:', error));
             }
-            
-            setInterval(updateData, 1000);
-            //updateData();
+            setInterval(updateData, 2000);
         </script>
         
     </body>

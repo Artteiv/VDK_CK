@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html>
-    <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
-    <head>
-        <title>ESP8266 Control Panel</title>
-    </head>
-    <body onload="updateData()">
-        <h1>ESP8266 Control Panel</h1>
+  <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
+  <head>
+    <title>ESP8266 Control Panel</title>
+  </head>
+  <body onload="updateData()">
+    <h1>ESP8266 Control Panel</h1>
 
-        <h2>Thông tin cảm biến dò line</h2>
-        <p id="line"></p>
+    <h2>Thông tin cảm biến dò line</h2>
+    <p id="line"></p>
 
-        <h2>Điều khiển động cơ bước</h2>
-        <input type="number" id="angle" placeholder="Nhập góc (-90 đến 90)" />
-        <button onclick="controlStepper()">Điều khiển Servo</button>
+    <h2>Điều khiển động cơ Stepper</h2>
+    <input type="number" id="angle" placeholder="Nhập góc (-90 đến 90)" />
+    <button onclick="controlStepper()">Điều khiển</button>
 
-        <script>
-            var espServer = "http://192.168.49.10"
-            function getLine() {
-                fetch(espServer+"/line")
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then((data) => {
-                        console.log("Line:", data);
-                        let p = parseInt(data);
-    
-                        document.getElementById("line").innerText = "Line "+(p?"Đen":"Trắng") ;
-                    })
-                    .catch(error => console.error('Error:', error));
+    <script>
+      var espServer = "http://192.168.236.10";
+      function getLine() {
+        fetch(espServer + "/line")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
             }
-        
-            function updateData() {
-                getLine();
+            return response.text();
+          })
+          .then((data) => {
+            console.log("Line:", data);
+            let p = parseInt(data);
+
+            document.getElementById("line").innerText =
+              "Line " + (p ? "Đen" : "Trắng");
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function updateData() {
+        getLine();
+      }
+
+      function controlStepper() {
+        const angle = document.getElementById("angle").value;
+        fetch(espServer + `/stepper?angle=${angle}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
             }
-        
-            function controlStepper() {
-                const angle = document.getElementById("angle").value;
-                fetch(espServer+`/stepper?angle=${angle}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        console.log("Stepper controlled");
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
-            setInterval(updateData, 2000);
-        </script>
-        
-    </body>
+            console.log("Stepper controlled");
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+      setInterval(updateData, 2000);
+    </script>
+  </body>
 </html>

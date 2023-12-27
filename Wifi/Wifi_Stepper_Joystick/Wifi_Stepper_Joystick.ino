@@ -8,19 +8,19 @@
 
 /*
  LƯU Ý: CHƯA CHẠY THỬ
-Thiết bị gắn:
+Thiết bị gắn: 
   - Động cơ Stepper: Gắn dây IN1~D2, IN2~D5, IN3~D6, IN4~D7 // chân cắm đúng, chưa chạy thử
-  - Cảm biến ánh sáng: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // chân cắm đúng chưa chạy thử
+  - Cảm biến joystck: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 // đã kiểm tra, //oke
 */
 
 // Thiết lập thông số cho WiFi
-const char* ssid = "Nha Khoa Duy An";
-const char* password = "12345678";
+#define x 0
+const char* ssid = "123456789";
+const char* password = "1234@56789";
 
 // Khởi tạo đối tượng máy chủ web
 ESP8266WebServer server(80);
 
-#define LIGHT 0
 
 const int STEPS = 2048;
 Stepper myStepper = Stepper(STEPS,4,12,14,13);
@@ -37,8 +37,8 @@ int degreeToSteps(int degree, int STEPS = 2048){
 class BlinkTask : public Task {
  protected:
   void setup() {
+  
   }
-
   void loop() {
     int degreeC = 0;
     if (angle>0){
@@ -51,13 +51,13 @@ class BlinkTask : public Task {
 
 } spin;
 
-void handleLight() {
-  int value = analogRead(LIGHT);
-  Serial.println(value);
-  if (isnan(value)) {
-    server.send(500, "text/plain", "Lỗi khi đọc độ ẩm từ cảm biến");
+void handleJoystick() {
+  int val = analogRead(gasPin);
+  Serial.println(val);
+  if (isnan(val)) {
+    server.send(500, "text/plain", "Lỗi khi đọc từ cảm biến");
   } else {
-    server.send(200, "text/plain", String(value));
+    server.send(200, "text/plain", String(val));
   }
 }
 
@@ -91,7 +91,7 @@ void setup() {
   /*
     Thêm đường dẫn xử lý driver
   */
-  server.on("/light",HTTP_GET, handleLight);
+  server.on("/joystick", handleJoystick);
   server.on("/stepper", HTTP_GET, handleStepper);
 
   // Khởi động máy chủ
@@ -107,7 +107,7 @@ void setup() {
   /*
   Thiết bị gắn phụ:
     - Động cơ bước
-    - Cảm biến ánh sáng (không khai báo vì mặc định chân tương tự là input)
+    - Cảm biến khí ga ()
   */
   myStepper.setSpeed(13);
   // lập lịch

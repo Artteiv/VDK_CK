@@ -8,16 +8,15 @@ void setup() {
 } 
   
 void loop() { 
-  delay(1000);
   val = analogRead(LIGHT);
   Serial.println(val);
   if (val > 700) {
     IrSender.sendNECRaw(1); 
-    delay(200);
+    delay(500);
   }
   else{
-    IrSender.sendNECRaw(0);
-    delay(200);
+    IrSender.sendNECRaw(2);
+    delay(500);
   }
       
 }

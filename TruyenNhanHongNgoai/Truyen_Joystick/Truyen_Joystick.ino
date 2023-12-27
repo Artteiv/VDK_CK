@@ -2,9 +2,9 @@
 //START JOYSTICK VARIABLE
 int JoyStickX = 1; //A1
 int JoyStickY = 2; // A2
-int JoyStickZ = 3;
+int JoyStickZ = 4;
 
-bool joystick(int thresholdX = 550, int thresholdY = 550, int thresholdZ= 1) {
+bool joystick(int thresholdX = 550, int thresholdY = 550, int thresholdZ= 3) {
   int x, y, z;
   x = analogRead(JoyStickX);
   y = analogRead(JoyStickY);
@@ -29,8 +29,8 @@ void loop(){
     IrSender.sendNECRaw(1); 
     delay(200);
   } else {
-  Serial.println("0");
-    IrSender.sendNECRaw(0); 
+  Serial.println("2");
+    IrSender.sendNECRaw(2); 
     delay(200);
   }
 }

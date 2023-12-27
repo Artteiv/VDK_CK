@@ -13,7 +13,7 @@ void setup() {
 } 
   
 void loop() { 
-  delay(2000);
+  delay(300);
   unsigned long duration; // biến đo thời gian
   int distance;           // biến lưu khoảng cách
 
@@ -33,7 +33,7 @@ void loop() {
     delay(200);
   }
   else{
-    IrSender.sendNECRaw(0);
+    IrSender.sendNECRaw(2);
     delay(200);
   }
       

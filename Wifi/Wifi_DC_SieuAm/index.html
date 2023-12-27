@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
+    <head>
+        <title>ESP8266 Control Panel</title>
+    </head>
+    <body onload="updateData()">
+        <h1>ESP8266 Control Panel</h1>
+
+        <h2>Thông tin cảm biến siêu âm</h2>
+        <p id="sieuam"></p>
+
+        <h2>Điều khiển DC</h2>
+        <select id="dc">
+            <option value="3">Nhanh dần</option>
+            <option value="4">Chậm dần</option>
+            <option value="1">Cùng chiều</option>
+            <option value="2">Ngược chiều</option>
+          </select>
+          
+        <button onclick="controlDC()">Điều khiển Servo</button>
+
+        <script>
+            var espServer = "http://192.168.94.10"
+        
+            function getSieuam() {
+                fetch(espServer+"/sieuam")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then((data) => {
+                        console.log("sieuam:", data);
+                        document.getElementById("sieuam").innerText = "Khoảng cách đến vật cản: "+ data +"cm." ;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        
+            function updateData() {
+                getSieuam();
+            }
+        
+            function controlDC() {
+                const selectElement = document.getElementById('dc');
+                const selectedValue = selectElement.value;
+            
+                // Thực hiện fetch dữ liệu dựa trên giá trị đã chọn
+                fetch(espServer+`/dc?direction=${selectedValue}`)
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Có lỗi khi tải dữ liệu');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Xử lý dữ liệu ở đây
+                    console.log('Dữ liệu nhận được:', data);
+                })
+                .catch(error => {
+                    console.error('Đã xảy ra lỗi:', error);
+                });
+              }
+              
+            setInterval(updateData, 1000);
+        </script>
+        
+    </body>
+</html>

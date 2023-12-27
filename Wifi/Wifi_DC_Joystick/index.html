@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <!-- Đổi thông tin ở dòng 32 nếu cần sửa line trắng đen -->
+  <head>
+    <title>ESP8266 Control Panel</title>
+  </head>
+  <body onload="updateData()">
+    <h1>ESP8266 Control Panel</h1>
+
+    <h2>Thông tin cảm biến Joystick</h2>
+    <p id="joystick"></p>
+
+    <h2>Điều khiển DC</h2>
+    <select id="dc">
+      <option value="3">Nhanh dần</option>
+      <option value="4">Chậm dần</option>
+      <option value="1">Cùng chiều</option>
+      <option value="2">Ngược chiều</option>
+    </select>
+
+    <button onclick="controlDC()">Điều khiển Servo</button>
+    <br />
+    <p id="err"></p>
+    <script>
+      var espServer = "http://192.168.195.10";
+
+      function getJoystick() {
+        fetch(espServer + "/joystick")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then((data) => {
+            console.log("joystick:", data);
+            document.getElementById("joystick").innerText = "Tọa độ x: " + data;
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function updateData() {
+        getJoystick();
+      }
+
+      function controlDC() {
+        const selectElement = document.getElementById("dc");
+        const selectedValue = selectElement.value;
+
+        // Thực hiện fetch dữ liệu dựa trên giá trị đã chọn
+        fetch(espServer + `/dc?direction=${selectedValue}`)
+          .then((response) => {
+            if (!response.ok) {
+              document.getElementById("err").innerText = "Lỗi";
+              throw new Error("Có lỗi khi tải dữ liệu");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Xử lý dữ liệu ở đây
+            document.getElementById("err").innerText = "DC đã được điều khiển";
+          })
+          .catch((error) => {
+            document.getElementById("err").innerText = "DC đã được điều khiển";
+            console.error("Đã xảy ra lỗi:", error);
+          });
+      }
+
+      setInterval(updateData, 5000);
+    </script>
+  </body>
+</html>

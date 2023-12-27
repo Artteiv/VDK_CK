@@ -31,7 +31,7 @@ void loop() {
       digitalWrite(input1, HIGH);
       digitalWrite(input2, LOW);
       delay(1000);
-    } else if (val == 0) {
+    } else if (val == 2) {
       Serial.println("decoode2");
       analogWrite(enableA, 255);
       digitalWrite(input1, LOW);

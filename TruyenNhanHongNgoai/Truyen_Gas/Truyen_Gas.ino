@@ -10,7 +10,7 @@ void setup() {
 } 
   
 void loop() { 
-  delay(2000);
+  delay(500);
   val = analogRead(GasPin);
   Serial.println(val, DEC);
   if (val > 120) {
@@ -18,7 +18,7 @@ void loop() {
     delay(200);
   }
   else{
-    IrSender.sendNECRaw(0); 
+    IrSender.sendNECRaw(2); 
     delay(200);
   }
       

@@ -27,7 +27,7 @@ void loop() {
     delay(200);
   }
   else{
-    IrSender.sendNECRaw(0);
+    IrSender.sendNECRaw(2);
     delay(200);
   }
       

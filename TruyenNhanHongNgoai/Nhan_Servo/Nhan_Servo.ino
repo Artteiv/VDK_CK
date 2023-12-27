@@ -24,14 +24,13 @@ void loop() {
       delay(1000);
       myservo.write(0);
       delay(1000);
-    } else if (val == 0) {
+    } else if (val == 2) {
       Serial.println("decode2");
       myservo.write(45);
       delay(1000);
       myservo.write(0);
       delay(1000);
     }
-    delay(500);
 
   }
     IrReceiver.resume();
