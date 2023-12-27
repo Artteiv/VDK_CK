@@ -39,5 +39,13 @@ void loop() {
   const char* value = valueString.c_str();
   Serial.println(value);
   BTSerial.write(value);
+  if (distance<10){
+    Serial.println("YES");
+    const char* val = String(1).c_str();
+  }
+  else{
+    Serial.println("NO");
+    const char* val = String(0).c_str();
+  }
   delay(2000);
 }

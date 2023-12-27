@@ -3,7 +3,7 @@
 #include <LeanTask.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-
+#include <Servo.h>
 // Thiết lập thông số cho WiFi
 const char* ssid = "123456789";
 const char* password = "1234@56789";
@@ -12,87 +12,28 @@ const char* password = "1234@56789";
 ESP8266WebServer server(80);
 /*
 Thiết bị gắn:
-  - Động cơ DC: enable - D5, input1-D6, input2-D7  
+  - Động cơ servo: Gắn dây xanh (của nhóm)- vàng(gốc) là chân data vào D2 
   - Cảm biến joystck: Gắn data A0 vào chân A0(esp), chân nguồn vào 3v3 
 */
 #define x 0
+#define SERVO_PIN 4
 
-// Khai báo các chân điều khiển động cơ DC
-const int enableDC = 14;  // Chân enable động cơ DC - D5
-const int input1DC = 12;  // Chân input1 động cơ DC - D6
-const int input2DC = 13;  // Chân input2 động cơ DC - D7
+Servo servo;
 
-// Biến để lưu tốc độ hiện tại của động cơ DC
-int currentSpeed = 0;
-
-// Hằng số đại diện cho tốc độ tối đa và tốc độ tối thiểu
-const int MAX_SPEED = 255;
-const int MIN_SPEED = 0;
-
-// Hàm điều khiển động cơ DC theo hướng thuận
-void runDCForward() {
-  digitalWrite(enableDC, HIGH);
-  digitalWrite(input1DC, HIGH);
-  digitalWrite(input2DC, LOW);
-}
-
-// Hàm điều khiển động cơ DC theo hướng nghịch
-void runDCBackward() {
-  digitalWrite(enableDC, HIGH);
-  digitalWrite(input1DC, LOW);
-  digitalWrite(input2DC, HIGH);
-}
-
-// Hàm dừng động cơ DC
-void stopDC() {
-  digitalWrite(enableDC, LOW);
-  digitalWrite(input1DC, LOW);
-  digitalWrite(input2DC, LOW);
-}
-
-// Hàm tăng tốc độ động cơ DC
-void accelerateDC() {
-  currentSpeed += 5; // Điều chỉnh tăng tốc độ theo yêu cầu của bạn
-  // Đặt giới hạn tốc độ tối đa
-  if (currentSpeed > MAX_SPEED) {
-    currentSpeed = MAX_SPEED;
-  }
-
-  // Áp dụng tốc độ vào điều khiển động cơ DC
-  analogWrite(enableDC, currentSpeed);
-}
-
-// Hàm giảm tốc độ động cơ DC
-void decelerateDC() {
-  currentSpeed -= 5; // Điều chỉnh giảm tốc độ theo yêu cầu của bạn
-
-  // Đặt giới hạn tốc độ tối thiểu
-  if (currentSpeed < MIN_SPEED) {
-    currentSpeed = MIN_SPEED;
-  }
-
-  // Áp dụng tốc độ vào điều khiển động cơ DC
-  analogWrite(enableDC, currentSpeed);
-}
-int direction = 0;
+int servo_angle = 90;
 class BlinkTask : public Task {
-    void setup() {
+ protected:
+  void setup() {
   }
 
   void loop() {
-    if (direction == 1) {
-      runDCForward();
-    } else if (direction == 2) {
-      runDCBackward();
-    } else if (direction == 3) {
-      accelerateDC();
-    } else if (direction == 4) {
-      decelerateDC();
-    } else {
-      stopDC();
-    }
+    servo.write(servo_angle);
+    delay(1000);
+    servo.write(0);
+    delay(1000);
   }
-} DCTask;
+
+} servoSpin;
 
 void handleJoystick() {
   int val = analogRead(gasPin);
@@ -104,13 +45,13 @@ void handleJoystick() {
   }
 }
 
-void handleDC() {
-  // Xử lý yêu cầu điều khiển động cơ DC
-  if (server.hasArg("direction")) {
-    direction = server.arg("direction").toInt();
-    server.send(200, "text/plain", "Đã điều khiển động cơ DC");
+void handleServo() {
+  // Xử lý vận hành Servo ở đây, dựa trên tham số được truyền (eg)
+  if (server.hasArg("angle")) {
+    servo_angle = server.arg("angle").toInt()*2;
+    server.send(200, "text/plain", "Servo đã được điều khiển");
   } else {
-server.send(400, "text/plain", "Thiếu tham số cho động cơ DC");
+    server.send(400, "text/plain", "Thiếu tham số cho Servo");
   }
 }
 
@@ -126,17 +67,10 @@ void setup() {
     delay(1000);
   }
   Serial.println("Đã kết nối thành công!");
-
-  // Thiết lập các chân điều khiển động cơ DC
-  pinMode(enableDC, OUTPUT);
-  pinMode(input1DC, OUTPUT);
-  pinMode(input2DC, OUTPUT);
-  // Thiết lập chân động cơ DC và thử nghiệm
-  stopDC();  // Dừng động cơ khi khởi động
   
   // Thêm đường dẫn xử lý driver
   server.on("/joystick", handleJoystick);
-  server.on("/dc", HTTP_GET, handleDC);
+  server.on("/servo", HTTP_GET, handleServo);
 
   // Khởi động máy chủ
   server.enableCORS(true);
@@ -149,7 +83,9 @@ void setup() {
   Serial.println("/");
 
   // Lập lịch cho nhiệm vụ của DCTask
-  Scheduler.start(&DCTask);
+  // dht.begin();
+  servo.attach(SERVO_PIN);
+  Scheduler.start(&servoSpin);
   Scheduler.begin();
 }
 
