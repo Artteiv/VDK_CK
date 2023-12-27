@@ -1,18 +1,15 @@
-#include <IRremote.h>
-#define PIN_RECV 2
+// Connect the HC-05 and communicate using the serial monitor
+// When first powered on. you need to manually enter AT mode
+// The default baud rate for AT mode is 38400
+#include <SoftwareSerial.h> 
+SoftwareSerial BTSerial(10, 11); // RX | TX
+// Connect the HC-05 TX to Arduino pin 10
+// Connect the HC-05 RX to Arduino pin 11
 
-IRrecv receiver(PIN_RECV);
-decode_results output;
+int enableA = 3;
+int input1 = 5;
+int input2 = 4;
 
-// Kết nối động cơ A
-int enableA = 3; // Không cần cắm
-int input1 = 5; // Cắm vào chân xung D5 (đúng tên biến input1 vì trong class DC dùng)
-int input2 = 6; // Cắm vào chân xung D6
-
-
-/*
-  Bên dưới là code cho lớp chạy động cơ DC
-*/
 struct DC{
   int speed;
   int curspeed = 0;
@@ -116,28 +113,36 @@ struct DC{
 } DCTask;
 
 void setup() {
-  // pinMode(enableA, OUTPUT);
-  // Cài đặt cho động cơ 
+  pinMode(enableA, OUTPUT);
   pinMode(input1, OUTPUT);
   pinMode(input2, OUTPUT);
+  pinMode(9, OUTPUT);
+  digitalWrite(9, HIGH);
   Serial.begin(9600);
-  // cài đặt cho IR
-  IrReceiver.begin(PIN_RECV, ENABLE_LED_FEEDBACK);
+  Serial.println("Arduino is ready:");
+  Serial.println("Remember to select Both BL & CR in the serial monitor");
+  BTSerial.begin(9600); // HC-05 default speed in AT command
+  pinMode(7, OUTPUT);
 }
 
 void loop() {
-  if (IrReceiver.decode()) {
-    uint32_t val = IrReceiver.decodedIRData.decodedRawData;
-    Serial.print("Giá trị nhận được: ")
-    Serial.println(val);
-    if (val == 1) {
-      Serial.println("decode");
-      DCTask.thuan_chieu_nhanh_dan();// mỗi lần gọi sẽ thay đổi vận tốc
-    } else if (val == 2) {
-      Serial.println("decoode2");
-      DCTask.nguoc_chieu_cham_dan();// trong hàm này không có loop
+  if (BTSerial.available())
+  {
+    char c = BTSerial.read();
+    Serial.println(c);
+    if (c== '1')
+    {
+      DCTask.thuan_chieu_nhanh_dan();
+      delay(1000);
     }
-    delay(1000);// nhớ có delay ở trong cái hàm loop này
-    IrReceiver.resume();
+    else {
+      // Điều khiển tốc độ động cơ
+      DCTask.nguoc_chieu_cham_dan();
+      delay(1000);  
+    }
+  }
+  if (Serial.available())
+  {
+    BTSerial.write(Serial.read());
   }
 }
