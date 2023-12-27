@@ -24,3 +24,9 @@ Slave dây Đức
 #### Nhận:
 - Tương tự như truyền
 #### Module
+
+#### Những lưu ý
+- Tháo nguồn động cơ servo khi nạp code, tránh bị cắn ngược hỏng driver arduino
+- Với module wifi, kết nối wifi nhớ đổi địa chỉ
+- Với module bluetooth, tháo dây nguồn 2 thiết bị trước khi nạp, nếu kết nối không gửi được nhớ check lại chân rxtx
+- Động cơ DC hai chân IN1 IN2 phải kết nối với chân xung hoặc chân tương tự (mặc kệ lý thuyết)
